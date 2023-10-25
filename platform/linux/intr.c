@@ -6,6 +6,7 @@
 #include "platform.h"
 
 #include "util.h"
+#include "net.h"
 
 // irq means interrupt request
 
@@ -87,6 +88,9 @@ intr_thread(void *arg)
     case SIGHUP: // 割り込みスレッドへ終了を通知
       terminate = 1;
       break;
+    case SIGUSR1:
+      net_softirq_handler();
+      break;
     default:
       for (entry=irqs; entry; entry=entry->next) {
         if (entry->irq == (unsigned int)sig) {
@@ -140,6 +144,7 @@ intr_init(void)
   pthread_barrier_init(&barrier, NULL, 2);
   sigemptyset(&sigmask);
   sigaddset(&sigmask, SIGHUP);
+  sigaddset(&sigmask, SIGUSR1);
 
   return 0;
 }
