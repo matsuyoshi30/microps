@@ -142,7 +142,7 @@ net_shutdown(void)
   intr_shutdown();
   debugf("shutting down");
 
-  return 0;
+  return;
 }
 
 int
